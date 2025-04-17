@@ -6,8 +6,7 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use walkdir::WalkDir;
 
-/// Returns true if `path` contains a segment “target” immediately followed by
-/// “debug” or “release” (e.g. “…/target/debug/…”)—i.e. something we want to exclude.
+/// Returns true if `path` contains a segment “target”
 fn is_excluded_target_dir(path: &Path) -> bool {
     // Walk the components in pairs
     let mut comps = path.components()

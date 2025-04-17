@@ -324,7 +324,7 @@ fn load_dirs_pkgs_deps(dir_path: &Path) -> Result<Vec<(PathBuf, PackageAndDeps)>
         // Now filter out any paths that contain "target/release" or "target/debug".
         .filter(|(file_path, _)| {
             let path_str = file_path.to_string_lossy();
-            !(path_str.contains("target/release") || path_str.contains("target/debug"))
+            !(path_str.contains("/target/") || path_str.contains("/target/"))
         })
         .collect();
 
