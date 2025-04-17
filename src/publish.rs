@@ -16,11 +16,7 @@ fn is_excluded_target_dir(path: &Path) -> bool {
 
     while let Some(curr) = comps.next() {
         if curr == "target" {
-            if let Some(next) = comps.peek() {
-                if *next == "debug" || *next == "release" {
                     return true
-                }
-            }
         }
     }
     false
