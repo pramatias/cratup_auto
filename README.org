@@ -1,0 +1,23 @@
+#+AUTHOR: emporas
+#+DATE: 2025-03-24
+[[./assets/fxp_logo.jpeg]]
+
+* Table of Contents
+- [[#overview][Overview]]
+- [[#simple_examples][Simple examples]]
+- [[#license][License]]
+* Overview
+  :PROPERTIES:
+  :CUSTOM_ID: overview
+  :END:
+
+Cratup_auto is a tool for uprgading or downgrading dependency versions in Cargo.toml files. It has a
+
+
+To install the tool:
+
+  #+BEGIN_SRC bash
+  cargo install fxp_videoclipper
+  #+END_SRC
+
+Make sure you have Rust and Cargo installed. For further installation instructions, see [[#installation][Installation]].

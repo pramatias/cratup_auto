@@ -114,17 +114,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "cratup_modes"
-version = "0.2.0"
-
-[[package]]
 name = "cratup_search"
 version = "0.2.0"
 dependencies = [
  "anyhow",
  "colored",
  "console",
- "cratup_modes",
  "cratup_tree_sitter",
  "env_logger",
  "log",
