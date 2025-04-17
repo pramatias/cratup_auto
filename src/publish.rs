@@ -6,46 +6,56 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use walkdir::WalkDir;
 
-pub fn find_publishable_dirs(current_dir: &Path) -> Vec<PathBuf> {
-    debug!(
-        "Starting search for publishable directories in: {:?}",
-        current_dir
-    );
-    let mut publishable_dirs = Vec::new();
-    let mut total_dirs_scanned = 0;
-    let mut skipped_non_dir = 0;
+/// Returns true if `path` contains a segment “target” immediately followed by
+/// “debug” or “release” (e.g. “…/target/debug/…”)—i.e. something we want to exclude.
+fn is_excluded_target_dir(path: &Path) -> bool {
+    // Walk the components in pairs
+    let mut comps = path.components()
+                        .map(|c| c.as_os_str().to_string_lossy())
+                        .peekable();
 
-    // Walk through the given directory recursively.
-    for entry in WalkDir::new(current_dir).into_iter().filter_map(|e| e.ok()) {
-        // Only consider directories.
-        if entry.file_type().is_dir() {
-            total_dirs_scanned += 1;
-            let dir_path = entry.clone().into_path();
-
-            let cargo_toml = dir_path.join("Cargo.toml");
-
-            debug!("Checking directory: {:?}", dir_path);
-
-            if cargo_toml.exists() {
-                debug!("Found Cargo.toml in directory: {:?}", dir_path);
-                publishable_dirs.push(entry.into_path());
-                debug!("Added to publishable list: {:?}", dir_path);
-            } else {
-                debug!("Directory does not contain Cargo.toml: {:?}", dir_path);
+    while let Some(curr) = comps.next() {
+        if curr == "target" {
+            if let Some(next) = comps.peek() {
+                if *next == "debug" || *next == "release" {
+                    return true
+                }
             }
-        } else {
-            skipped_non_dir += 1;
-            debug!("Skipping non-directory entry: {:?}", entry.path());
         }
     }
+    false
+}
+
+/// Find all subdirectories containing a Cargo.toml, excluding any under
+/// target/debug or target/release.
+pub fn find_publishable_dirs(current_dir: &Path) -> Vec<PathBuf> {
+    debug!("Starting search for publishable directories in: {:?}", current_dir);
+
+    // WalkDir + iterator chain does all the work:
+    let publishable_dirs: Vec<PathBuf> = WalkDir::new(current_dir)
+        .into_iter()
+        // skip broken entries
+        .filter_map(Result::ok)
+        // only directories
+        .filter(|e| e.file_type().is_dir())
+        // get their PathBuf
+        .map(|e| e.into_path())
+        // has Cargo.toml?
+        .filter(|dir| dir.join("Cargo.toml").exists())
+        // not under target/debug or target/release?
+        .filter(|dir| {
+            let excluded = is_excluded_target_dir(dir);
+            if excluded {
+                debug!("Excluding target dir: {:?}", dir);
+            }
+            !excluded
+        })
+        .inspect(|dir| debug!("Will publish: {:?}", dir))
+        .collect();
 
     debug!(
-        "Directory scan completed. Stats:
-        - Total directories scanned: {}
-        - Non-directory entries skipped: {}
-        - Publishable directories found: {}",
-        total_dirs_scanned,
-        skipped_non_dir,
+        "Directory scan completed. \
+         Publishable directories found: {}",
         publishable_dirs.len()
     );
 
