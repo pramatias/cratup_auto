@@ -2,6 +2,8 @@
 name = "cratup_tree_sitter"
 version = "0.2.0"
 edition = "2024"
+description = "Part of cratup_auto, uses tree-sitter to parse a Toml file for package and dependencies info"
+license = "MIT"
 
 [dependencies]
 derive_more = { version = "2", features = ["full"] }
