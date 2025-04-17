@@ -1,0 +1,24 @@
+[package]
+name = "cratup_auto"
+version = "0.2.0"
+edition = "2024"
+
+[dependencies]
+clap = "4.5.23"
+log = "0.4"
+ctrlc = "3.4.5"
+anyhow = "1.0.95"
+clap-verbosity-flag = "3.0.2"
+console = "0.15.10"
+env_logger = "0.11.7"
+regex = "1.11.1"
+walkdir = "2.5.0"
+colored = "3.0.0"
+indicatif = "0.17.11"
+dialoguer = "0.11.0"
+strsim = "0.11.1"
+semver = "1.0.26"
+
+cratup_init = { version = "0.1", path = "./cratup_init"}
+cratup_tree_sitter = { version = "0.2", path = "./cratup_tree_sitter"}
+cratup_search = { version = "0.2", path = "./cratup_search"}

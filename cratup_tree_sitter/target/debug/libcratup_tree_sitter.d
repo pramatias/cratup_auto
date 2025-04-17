@@ -1,0 +1,1 @@
+/home/emporas/repos/cratup_auto/cratup_tree_sitter/target/debug/libcratup_tree_sitter.rlib: /home/emporas/repos/cratup_auto/cratup_tree_sitter/src/lib.rs /home/emporas/repos/cratup_auto/cratup_tree_sitter/src/tree_traversal.rs /home/emporas/repos/cratup_auto/cratup_tree_sitter/src/version_finder.rs
