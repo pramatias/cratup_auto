@@ -1,1 +1,0 @@
-/home/emporas/repos/cratup_auto/cratup_init/target/package/cratup_init-0.1.0/target/debug/libcratup_init.rlib: /home/emporas/repos/cratup_auto/cratup_init/target/package/cratup_init-0.1.0/src/config.rs /home/emporas/repos/cratup_auto/cratup_init/target/package/cratup_init-0.1.0/src/lib.rs /home/emporas/repos/cratup_auto/cratup_init/target/package/cratup_init-0.1.0/src/log.rs

@@ -1,1 +1,9 @@
+# ignore every target/ directory, anywhere in the tree
+**/target/
+# ignore packaged crates
+*.crate
+
 /target
+/cratup_init/target
+/cratup_search/target
+/cratup_tree_sitter/target
