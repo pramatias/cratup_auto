@@ -15,4 +15,4 @@ log = "0.4"
 
 # Optional, for building the grammar
 [build-dependencies]
-cc = "*"
+cc = "1.2.19"
