@@ -26,7 +26,13 @@
   - Searching for crates by name or version
   - Recursively publishing crates to crates.io
 
-It scans the current directory tree for `Cargo.toml` files and increases version in all nested Cargo files.
+It scans the current directory tree for `Cargo.toml` files and increases version in all nested Cargo files. It is syntax aware, and there is not danger of accidentally modifying versions where it is not supposed to. It uses tree-sitter-toml to parse the toml file.
+
+- The increase version subcommand, asks for confirmation before modifying anything.
+
+- The search subcommand parses and returns all local packages alongside with their versions, or some of them depending of their search criteria.
+
+- The publish command doesn't do dependency resolution, but it tries to publish all local packages one by one. Nested crates have to be published first, and when one nesting level succeeds, it will try to publish all packages again. Eventually all packages in all nesting levels will succeed, but the tool will try all packages every time until a nesting level succeeds.
 
 * Installation                                                                 :installation:
 Directly from crates.io:
