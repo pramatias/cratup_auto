@@ -158,10 +158,11 @@ Or use `-h` / `--help` on any command:
 cratup_auto incv -h
 #+END_SRC
 
-* Usage Examples                                                             :usage-examples:
+* Usage Examples
+:usage-examples:
 [[./assets/increase_version.png]]
 
-- **Version increase by specifying package**
+** Version increase by specifying package
    Bump only `my_crate` from `0.4.1` to `0.5.0` without prompts:
 
    #+BEGIN_SRC bash
@@ -169,7 +170,7 @@ cratup_auto incv -h
    #+END_SRC
 
 [[./assets/increase_version.png]]
-- **Version increase by specifying package**
+** Version increase by specifying package
    Bump only `my_crate` from `0.4.1` to `0.5.0` without prompts:
 
    #+BEGIN_SRC bash
@@ -177,14 +178,14 @@ cratup_auto incv -h
    #+END_SRC
 
 [[./assets/increase_version_with_package.png]]
-- **Search for all crates**
+** Search for all crates
 
    #+BEGIN_SRC bash
    cratup_auto search
    #+END_SRC
 
 [[./assets/general_search.png]]
-- **Search for all crates**
+** Search for all crates
 
    #+BEGIN_SRC bash
    cratup_auto search -p half_name
@@ -192,14 +193,14 @@ cratup_auto incv -h
 
 [[./assets/fuzzy_search.png]]
 
-- **Search for all crates at a given version**
+** Search for all crates at a given version
 
    #+BEGIN_SRC bash
    cratup_auto search -i 0.3.0
    #+END_SRC
 
 [[./assets/search_version.png]]
-- **Search for all crates at a given version**
+** Search for all crates at a given version
 
    #+BEGIN_SRC bash
    cratup_auto search -i 0.3.0 -p package_name
@@ -207,7 +208,7 @@ cratup_auto incv -h
 
 [[./assets/search_version_with_package.png]]
 
-- **Publish all version updates**
+** Publish all version updates
 
    #+BEGIN_SRC bash
    cratup_auto publish
