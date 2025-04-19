@@ -92,9 +92,8 @@ cratup_auto incv -h
 
 * Usage Examples
 :usage-examples:
-[[./assets/increase_version.png]]
 
-** Version increase by specifying package
+** Version increase
    Bump only `my_crate` from `0.4.1` to `0.5.0` without prompts:
 
    #+BEGIN_SRC bash
