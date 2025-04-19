@@ -22,15 +22,20 @@
 
 * Overview                                                                     :overview:
 `cratup_auto` is a CLI tool that helps you manage your Rust workspace by:
-  - Automatically initializing a per-project configuration
-  - Bumping crate versions in `Cargo.toml` files
+  - Automatically increasing local crate versions in `Cargo.toml` files
   - Searching for crates by name or version
   - Recursively publishing crates to crates.io
-  - Controlling verbosity with `-v`/`-q`
 
-It scans the current directory tree for `Cargo.toml` files and applies your commands in batch.
+It scans the current directory tree for `Cargo.toml` files and increases version in all nested Cargo files.
 
 * Installation                                                                 :installation:
+Directly from crates.io:
+
+#+BEGIN_SRC bash
+cargo install cratup_auto
+#+END_SRC
+
+
 To install the latest version from source, run:
 
 #+BEGIN_SRC bash
@@ -39,49 +44,17 @@ cd cratup_auto
 cargo install --path .
 #+END_SRC
 
-Or directly from crates.io (if published):
-
-#+BEGIN_SRC bash
-cargo install cratup_auto
-#+END_SRC
-
 Ensure you have Rust and Cargo (>=1.60) installed.
-
-* Configuration                                                                :configuration:
-The first time you run `cratup_auto`, generate a default config file:
+* Configuration :configuration:
+Init saves just one command for the moment
 
 #+BEGIN_SRC bash
 cratup_auto init
 #+END_SRC
 
-This creates a `.cratup.toml` in the current directory:
+* Commands :commands:
 
-#+BEGIN_SRC toml
-# ~/.cratup.toml or ./cratup.toml
-[registry]
-index = "https://github.com/rust-lang/crates.io-index"
-token = "YOUR_CRATES_IO_TOKEN"
-
-[defaults]
-package_name = ""       # if set, will apply commands only to this crate
-current_version = ""    # default version to match
-next_version = ""       # default next version to set
-#+END_SRC
-
-You can edit `.cratup.toml` to change your default registry, token, or default flags.
-
-* Commands                                                                    :commands:
-
-** init                                                                       :init:
-Initializes a new config file.
-
-#+BEGIN_SRC bash
-cratup_auto init [--force]
-#+END_SRC
-
-- `--force` / `-f`: overwrite existing config without prompting.
-
-** incv                                                                       :incv:
+** incv :incv:
 Increment one or more crate versions.
 
 Usage:
@@ -186,32 +159,61 @@ cratup_auto incv -h
 #+END_SRC
 
 * Usage Examples                                                             :usage-examples:
+[[./assets/increase_version.png]]
 
-1. **One-off version bump**
+- **Version increase by specifying package**
    Bump only `my_crate` from `0.4.1` to `0.5.0` without prompts:
 
    #+BEGIN_SRC bash
    cratup_auto incv -p my_crate -i 0.4.1 -r 0.5.0 -y
    #+END_SRC
 
-2. **Search for all crates at a given version**
+[[./assets/increase_version.png]]
+- **Version increase by specifying package**
+   Bump only `my_crate` from `0.4.1` to `0.5.0` without prompts:
+
+   #+BEGIN_SRC bash
+   cratup_auto incv -p my_crate -i 0.4.1 -r 0.5.0 -p package_name -y
+   #+END_SRC
+
+[[./assets/increase_version_with_package.png]]
+- **Search for all crates**
+
+   #+BEGIN_SRC bash
+   cratup_auto search
+   #+END_SRC
+
+[[./assets/general_search.png]]
+- **Search for all crates**
+
+   #+BEGIN_SRC bash
+   cratup_auto search -p half_name
+   #+END_SRC
+
+[[./assets/fuzzy_search.png]]
+
+- **Search for all crates at a given version**
 
    #+BEGIN_SRC bash
    cratup_auto search -i 0.3.0
    #+END_SRC
 
-3. **Publish everything**
+[[./assets/search_version.png]]
+- **Search for all crates at a given version**
+
+   #+BEGIN_SRC bash
+   cratup_auto search -i 0.3.0 -p package_name
+   #+END_SRC
+
+[[./assets/search_version_with_package.png]]
+
+- **Publish all version updates**
 
    #+BEGIN_SRC bash
    cratup_auto publish
    #+END_SRC
 
-4. **Combine verbosity flags**
-
-   #+BEGIN_SRC bash
-   cratup_auto incv -i 2.0.0 -r 2.1.0 -v
-   cratup_auto publish -vv
-   #+END_SRC
+[[./assets/publish.png]]
 
 * License                                                                     :license:
 MIT License
