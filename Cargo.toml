@@ -1,6 +1,6 @@
 [package]
 name = "cratup_auto"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2024"
 description = "Uses tree-sitter to parse and search a Toml file for package and dependencies info, it can increase each package's individual version"
 license = "MIT"

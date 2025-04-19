@@ -1,6 +1,6 @@
 [package]
 name = "cratup_search"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2024"
 description = "Part of cratup_auto, searches a toml file for package version and dependencies versions"
 license = "MIT"

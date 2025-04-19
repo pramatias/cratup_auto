@@ -7,6 +7,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
 use semver::Version;
+use std::collections::HashSet;
 
 use cratup_search::{VersionMatch, get_colored_dir_path_and_matches, get_colored_pkg_deps};
 use cratup_tree_sitter::{PackageAndDeps, VersionUpdate};
@@ -70,26 +71,83 @@ impl Increaser {
     }
 
     /// Print version matches using the green color for next version matches.
-pub fn print_next_version_matches(&self) -> Result<Vec<VersionMatch>> {
-    // Create a new instance identical to `self` by cloning the required fields.
-    let updated_increaser = Increaser::new(
-        self.dir_path.clone(),
-        self.next_version.clone(),
-        "0.0.0".to_string(),
-        self.package_name.clone(),
-    )?;
+    pub fn print_next_version_matches(&self) -> Result<Vec<VersionMatch>> {
+        // build a new Increaser for the “next” version
+        let mut updated = Increaser::new(
+            self.dir_path.clone(),
+            self.next_version.clone(),
+            "0.0.0".to_string(),
+            self.package_name.clone(),
+        )?;
 
-    // Construct the VersionUpdate for the next version matches.
-    let version_update = VersionUpdate {
-        package_name: updated_increaser.package_name.as_deref(),
-        current_version: &updated_increaser.next_version,
-        new_version: &updated_increaser.next_version,
-    };
+        // now filter updated.package_dirs so it only contains what existed in `self`
+        updated.package_dirs = self.filter_existing_packages(updated.package_dirs);
 
-    // Use the new instance to print the version matches with green coloring.
-    updated_increaser.print_version_matches(&version_update, |s| s.green())
+        // build the VersionUpdate as you did before
+        let version_update = VersionUpdate {
+            package_name: updated.package_name.as_deref(),
+            current_version: &updated.next_version,
+            new_version: &updated.next_version,
+        };
+
+        // finally, print only those filtered matches in green
+        updated.print_version_matches(&version_update, |s| s.green())
+    }
 }
 
+impl Increaser {
+    /// Keep only those package‐dirs whose package name or at least one dependency name
+    /// was present in `self.package_dirs` (the current increaser).
+    fn filter_existing_packages(
+        &self,
+        candidate_dirs: Vec<(PathBuf, PackageAndDeps)>,
+    ) -> Vec<(PathBuf, PackageAndDeps)> {
+        // 1. Build a set of all names we consider “existing”
+        let mut existing_names = HashSet::new();
+        for (_path, pkg_and_deps) in &self.package_dirs {
+            if let Some(pkg) = &pkg_and_deps.package {
+                existing_names.insert(pkg.name.clone());
+            }
+            for dep in &pkg_and_deps.dependencies {
+                existing_names.insert(dep.name.clone());
+            }
+        }
+
+        // 2. Filter & prune
+        candidate_dirs
+            .into_iter()
+            .filter_map(|(path, mut pkg_and_deps)| {
+                // does the updated package itself exist in the original?
+                let pkg_match = pkg_and_deps
+                    .package
+                    .as_ref()
+                    .map_or(false, |pkg| existing_names.contains(&pkg.name));
+
+                // do any of the updated deps exist in the original?
+                let deps_match = pkg_and_deps
+                    .dependencies
+                    .iter()
+                    .any(|dep| existing_names.contains(&dep.name));
+
+                // if neither the pkg nor any deps match, drop the whole entry
+                if !pkg_match && !deps_match {
+                    return None;
+                }
+
+                // prune out deps that weren’t in the original
+                pkg_and_deps
+                    .dependencies
+                    .retain(|dep| existing_names.contains(&dep.name));
+
+                // if the package itself didn't match, drop it too
+                if !pkg_match {
+                    pkg_and_deps.package = None;
+                }
+
+                Some((path, pkg_and_deps))
+            })
+            .collect()
+    }
 }
 
 impl Increaser {

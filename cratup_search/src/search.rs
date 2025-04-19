@@ -203,51 +203,70 @@ fn filter_package_and_deps(mut pkg_and_deps: PackageAndDeps, pkg_name: &str) -> 
     pkg_and_deps
 }
 
-fn filter_by_version(
-    package_dirs: Vec<(PathBuf, PackageAndDeps)>,
-    version: &str,
-) -> Vec<(PathBuf, PackageAndDeps)> {
-    debug!("Filtering packages by version: {}", version);
-    debug!("Total packages to check: {}", package_dirs.len());
+ fn filter_by_version(
+     package_dirs: Vec<(PathBuf, PackageAndDeps)>,
+     version: &str,
+ ) -> Vec<(PathBuf, PackageAndDeps)> {
+     debug!("Filtering packages by version: {}", version);
+     debug!("Total packages to check: {}", package_dirs.len());
 
-    package_dirs
-        .into_iter()
-        .filter(|(path, pkg_and_deps)| {
-            debug!("Checking package at path: {:?}", path);
+     package_dirs
+         .into_iter()
+         .filter_map(|(path, mut pkg_and_deps)| {
+             // check if the package itself matches
+             let pkg_matches = pkg_and_deps
+                 .package
+                 .as_ref()
+                 .map_or(false, |pkg| {
+                     let m = pkg.version == version;
+                     debug!(
+                         "Package '{}' version '{}' {} match target '{}'",
+                         pkg.name,
+                         pkg.version,
+                         if m { "does" } else { "does not" },
+                         version
+                     );
+                     m
+                 });
 
-            let pkg_matches = pkg_and_deps.package.as_ref().map_or(false, |pkg| {
-                let matches = pkg.version == version;
-                debug!(
-                    "Package version '{}' {} match target '{}'",
-                    pkg.version,
-                    if matches { "does" } else { "does not" },
-                    version
-                );
-                matches
-            });
+             // check if any dependency matches
+             let deps_matches = pkg_and_deps
+                 .dependencies
+                 .iter()
+                 .any(|dep| dep.version == version);
 
-            let deps_matches = pkg_and_deps.dependencies.iter().any(|dep| {
-                let matches = dep.version == version;
-                if matches {
-                    debug!(
-                        "Found matching dependency: '{}' version '{}'",
-                        dep.name, dep.version
-                    );
-                }
-                matches
-            });
+             let overall_match = pkg_matches || deps_matches;
+             debug!(
+                 "Package at {:?} {} match version criteria",
+                 path,
+                 if overall_match { "does" } else { "does not" }
+             );
 
-            let overall_match = pkg_matches || deps_matches;
-            debug!(
-                "Package at {:?} {} match version criteria",
-                path,
-                if overall_match { "does" } else { "does not" }
-            );
+             if !overall_match {
+                return None;
+             }
 
-            overall_match
-        })
-        .collect()
-}
+             // prune out any deps that aren’t exactly this version
+             let before = pkg_and_deps.dependencies.len();
+             pkg_and_deps
+                 .dependencies
+                 .retain(|dep| dep.version == version);
+             let after = pkg_and_deps.dependencies.len();
+             debug!(
+                 "Pruned dependencies: {} → {} entries (version '{}')",
+                 before, after, version
+             );
+
+            // if the package itself didn’t match, drop it
+            if !pkg_matches {
+                pkg_and_deps.package = None;
+                debug!("Package field set to None because version != '{}'", version);
+            }
+
+            Some((path, pkg_and_deps))
+         })
+         .collect()
+ }
 
 /// Loads directories and their package/dependency information.
 /// This method walks the directory recursively and collects package information from Cargo.toml files.

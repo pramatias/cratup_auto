@@ -301,7 +301,7 @@ fn run_search(args: &SearchArgs) -> Result<(), Box<dyn std::error::Error>> {
         if !found_packages.is_empty() {
             // Print the fuzzy found package information on screen.
             for (path, pkg_and_deps) in &found_packages {
-                println!("Found similar package: {:?}", pkg_and_deps.package);
+                println!("Found similar package (exact package name not found): {}", pkg_and_deps.package.clone().unwrap().name.green());
                 debug!(
                     "Fuzzy search found package at {:?}: {:?}",
                     path, pkg_and_deps
@@ -346,13 +346,12 @@ fn run_publish() -> Result<()> {
 fn ask_to_continue() {
     // Prompt the user with a yes/no question. If the user presses enter, the default value (false) is returned.
     let continue_execution = Confirm::new()
-        .with_prompt("Do you want to continue execution? (No/yes)")
+        .with_prompt("Proceed to bump all to the new version? (No/yes)")
         .default(false)  // default is "No" if enter is pressed
         .interact()
         .unwrap();
 
     if continue_execution {
-        println!("Continuing execution.");
     } else {
         println!("Execution interrupted.");
         process::exit(1);
