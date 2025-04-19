@@ -1,4 +1,4 @@
-#+TITLE: cratup_auto — Crate Upload Automatic
+#+TITLE: cratup_auto — Crate Upload Automated
 #+AUTHOR: emporas
 #+EMAIL: emporas@example.com
 #+DATE: 2025-04-19
