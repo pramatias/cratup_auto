@@ -1,8 +1,8 @@
-#+TITLE: cratup_auto — Module Management Tool
+#+TITLE: cratup_auto — Crate Upload Automatic
 #+AUTHOR: emporas
 #+EMAIL: emporas@example.com
 #+DATE: 2025-04-19
-#+DESCRIPTION: A tool for automating version bumps, searches, and publishing of Rust crates.
+#+DESCRIPTION: A tool for local increase of Cargo.toml version , searches, and publishes of Rust crates.
 #+KEYWORDS: rust, cargo, crates, automation, versioning
 #+LANGUAGE: en
 #+OPTIONS: toc:nil
