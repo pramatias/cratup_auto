@@ -46,7 +46,7 @@ cargo install --path .
 
 Ensure you have Rust and Cargo (>=1.60) installed.
 * Configuration :configuration:
-Init saves just one command for the moment
+Init saves just one flag, whether or not to ask so as to replace the old version with the new
 
 #+BEGIN_SRC bash
 cratup_auto init
@@ -57,16 +57,6 @@ cratup_auto init
 ** incv :incv:
 Increment one or more crate versions.
 
-Usage:
-
-#+BEGIN_SRC bash
-cratup_auto incv \
-  --current-version 0.4.1 \
-  --next-version    0.4.2 \
-  [--package-name   my_crate] \
-  [-y|--yes]
-#+END_SRC
-
 Flags:
 
   - `-i`, `--current-version <CURRENT>`   Version to replace (e.g. `0.4.1`).
@@ -76,83 +66,25 @@ Flags:
   - `-v`, `--verbose`                     Increase logging detail.
   - `-q`, `--quiet`                       Suppress non-error output.
 
-Example (interactive):
-
-#+BEGIN_SRC bash
-$ cratup_auto incv -i 1.2.3 -r 1.2.4
-Found 3 crates at version 1.2.3:
-  - crate_a/1.2.3
-  - crate_b/1.2.3
-  - crate_c/1.2.3
-Proceed to bump all to 1.2.4? [y/N] y
-✔ crate_a updated to 1.2.4
-✔ crate_b updated to 1.2.4
-✔ crate_c updated to 1.2.4
-#+END_SRC
-
-** search                                                                     :search:
+** search :search:
 Search for crates by name and/or version.
-
-Usage:
-
-#+BEGIN_SRC bash
-cratup_auto search \
-  [--package-name <PACKAGE>] \
-  [--version      <VERSION>]
-#+END_SRC
-
-Flags:
 
   - `-p`, `--package-name <PACKAGE>`  Filter by crate name (supports substring).
   - `-i`, `--version <VERSION>`       Filter by exact version (e.g. `0.4.1`).
   - `-v`, `--verbose`                 Show full path to each found `Cargo.toml`.
   - `-q`, `--quiet`                   Only list paths, no headers.
 
-Example:
+** publish :publish:
 
-#+BEGIN_SRC bash
-$ cratup_auto search -p serde -i 1.0.130
-Found 2 matches:
-  ./crates/serde/serde-derive/Cargo.toml (version 1.0.130)
-  ./vendor/serde/Cargo.toml          (version 1.0.130)
-#+END_SRC
-
-** publish                                                                    :publish:
-Recursively publish all crates found under the current directory.
-
-Usage:
-
-#+BEGIN_SRC bash
-cratup_auto publish \
-  [--dry-run] \
-  [-v|--verbose] \
-  [-q|--quiet]
-#+END_SRC
-
-Flags:
-
-  - `--dry-run`       Show what would be published without executing.
-  - `-v`, `--verbose` Increase verbosity.
-  - `-q`, `--quiet`   Only print crates being published.
-
-Example:
-
-#+BEGIN_SRC bash
-$ cratup_auto publish --dry-run
-Would publish:
-  crates/crate_a v0.4.2
-  crates/crate_b v0.1.0
-  examples/demo_app v0.1.0
-#+END_SRC
+- No flags
 
 ** help                                                                       :help:
-Prints help for any subcommand.
-
+Prints all subcommands.
 #+BEGIN_SRC bash
-cratup_auto help <COMMAND>
+cratup_auto -h
 #+END_SRC
 
-Or use `-h` / `--help` on any command:
+Use `-h` / `--help` on any subcommand:
 
 #+BEGIN_SRC bash
 cratup_auto incv -h
